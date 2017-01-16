@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "115830879173",
+    "firebase_url": "https://pluris-23eec.firebaseio.com",
+    "project_id": "pluris-23eec",
+    "storage_bucket": "pluris-23eec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115830879173:android:536ae50729e16999",
+        "android_client_info": {
+          "package_name": "com.github.joaogalli.capstonepluris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115830879173-56r398g3q4mfe0p94qb9qae25snlljcd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.joaogalli.capstonepluris",
+            "certificate_hash": "A0EA788313D128394B09D41D06FED48EC4D91D1E"
+          }
+        },
+        {
+          "client_id": "115830879173-divrijud7i4jq3eprq1h9bm9lbuk2os8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEaskI4CZRyDtM84ZHyuMn1UZ6f1Wzoyw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115830879173-divrijud7i4jq3eprq1h9bm9lbuk2os8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
