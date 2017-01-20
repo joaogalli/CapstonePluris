@@ -13,41 +13,6 @@
     tools:context="com.github.joaogalli.capstonepluris.newsubreddit.NewSubredditActivityFragment"
     tools:showIn="@layout/activity_new_subreddit">
 
-    <RelativeLayout
-        android:id="@+id/searchLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/subredditFieldLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/addButton">
-
-            <EditText
-                android:id="@+id/subredditField"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:hint="@string/search_a_subreddit" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/addButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/subredditFieldLayout"
-            android:layout_marginLeft="8dp"
-            android:text="@string/search" />
-    </RelativeLayout>
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
