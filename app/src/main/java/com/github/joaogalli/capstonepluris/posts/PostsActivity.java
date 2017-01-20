@@ -1,15 +1,21 @@
 package com.github.joaogalli.capstonepluris.posts;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
+import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
+import com.github.joaogalli.capstonepluris.model.PostColumns;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +47,27 @@ public class PostsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(subreddit.getTitle());
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.load: {
+                Cursor cursor = getContentResolver().query(PostsProvider.CONTENT_URI, null, null, null, null);
+                Toast.makeText(this, "Count: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
+                cursor.close();
+            }
+            break;
+            case R.id.insert: {
+                ContentValues values = new ContentValues();
+                values.put(PostColumns.ID, 3);
+                values.put(PostColumns.TITLE, "Teste 3");
+
+                Uri uri = getContentResolver().insert(
+                        PostsProvider.CONTENT_URI, values);
+            }
+            break;
+        }
+
     }
 
     @Override
