@@ -2,6 +2,7 @@ package com.github.joaogalli.capstonepluris.newsubreddit;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 
@@ -25,9 +26,11 @@ public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void,
 
     private static final String TAG = SearchSubredditAsyncTask.class.getSimpleName();
     private SubredditSearchRecyclerViewAdapter mAdapter;
+    private ProgressBar progressBar;
 
-    public SearchSubredditAsyncTask(SubredditSearchRecyclerViewAdapter mAdapter) {
+    public SearchSubredditAsyncTask(SubredditSearchRecyclerViewAdapter mAdapter, ProgressBar progressBar) {
         this.mAdapter = mAdapter;
+        this.progressBar = progressBar;
     }
 
     @Override

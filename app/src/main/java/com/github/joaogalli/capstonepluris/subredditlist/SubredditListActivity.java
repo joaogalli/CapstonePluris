@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
@@ -38,6 +39,8 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
     private TextView emptyTextView;
 
     private GoogleApiClient mGoogleApiClient;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +85,14 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
         });
 
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
+        progressBar.setVisibility(View.GONE);
+
         List<Subreddit> list = new ArrayList<>();
 
         for (DataSnapshot ds: dataSnapshot.getChildren()) {
@@ -100,7 +107,7 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

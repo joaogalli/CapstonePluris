@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class NewSubredditActivityFragment extends Fragment implements View.OnCli
 
     private Toast toast;
 
+    private ProgressBar progressBar;
+
     public NewSubredditActivityFragment() {
     }
 
@@ -57,6 +60,8 @@ public class NewSubredditActivityFragment extends Fragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_new_subreddit, container, false);
 
         toast = Toast.makeText(getContext(), null, Toast.LENGTH_SHORT);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         subredditNameEditText = (EditText) view.findViewById(R.id.subredditField);
         ((Button) view.findViewById(R.id.addButton)).setOnClickListener(this);
@@ -87,7 +92,6 @@ public class NewSubredditActivityFragment extends Fragment implements View.OnCli
         }
     }
 
-
     private boolean validate(String subredditName) {
         if (subredditName == null || subredditName.isEmpty()) {
             Toast.makeText(getActivity(), "You must fill a Subreddit name in the field.", Toast.LENGTH_SHORT).show();
@@ -97,7 +101,19 @@ public class NewSubredditActivityFragment extends Fragment implements View.OnCli
     }
 
     private void search(String query) {
-        new SearchSubredditAsyncTask(mAdapter).execute(query);
+        new SearchSubredditAsyncTask(mAdapter, progressBar) {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected void onPostExecute(Subreddit[] subreddits) {
+                progressBar.setVisibility(View.GONE);
+                super.onPostExecute(subreddits);
+            }
+        }.execute(query);
     }
 
     @Override
