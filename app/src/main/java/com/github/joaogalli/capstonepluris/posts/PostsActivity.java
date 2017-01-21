@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
@@ -87,7 +86,6 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
                         }
                     }
                 }
-
             }
         });
 
@@ -98,7 +96,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshItens();
+                refreshItems();
             }
         });
 
@@ -106,10 +104,10 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
 
         // First load
         // TODO optimize this
-        refreshItens();
+        refreshItems();
     }
 
-    private void refreshItens() {
+    private void refreshItems() {
         new PostsBySubredditAsyncTask(PostsActivity.this) {
             @Override
             protected void onPostExecute(String jsonStr) {
@@ -117,21 +115,6 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
                 swipeRefreshLayout.setRefreshing(false);
             }
         }.execute(subreddit.getDisplayName());
-    }
-
-    public void onClick(View view) {
-//        switch(view.getId()) {
-//            case R.id.load: {
-//                Cursor cursor = getContentResolver().query(PostsProvider.CONTENT_URI, null, null, null, null);
-//                Toast.makeText(this, "Count: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
-//                cursor.close();
-//            }
-//            break;
-//            case R.id.insert: {
-//                new PostsBySubredditAsyncTask(this).execute("space");
-//            }
-//            break;
-//        }
     }
 
     @Override
@@ -147,16 +130,19 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
         if (id == R.id.action_remove_subreddit) {
             removeKey();
             return true;
-        } else if (id == R.id.action_count) {
-                Cursor cursor = getContentResolver().query(PostsProvider.CONTENT_URI, null, null, null, null);
-                Toast.makeText(this, "Count: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
-                cursor.close();
+        } else if (id == R.id.action_count) { // TODO remover
+            Cursor cursor = getContentResolver().query(PostsProvider.CONTENT_URI, null, PostColumns.SUBREDDIT + " = ?", new String[] { subreddit.getDisplayName() }, null);
+            Toast.makeText(this, "Count: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
+            cursor.close();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void removeKey() {
+        int deletedPosts = this.getContentResolver().delete(PostsProvider.CONTENT_URI, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()});
+        Toast.makeText(this, "Deleted posts = " + deletedPosts, Toast.LENGTH_LONG).show();
+
         String uid = FirebaseUtils.getUidOrGoToLogin(this);
         DatabaseReference subreddits = mDatabase.child("subreddits").child(uid).child(subreddit.getKey());
         subreddits.removeValue(new DatabaseReference.CompletionListener() {
@@ -183,7 +169,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
 
         // new String[] {PostColumns.TITLE}
 
-        return new CursorLoader(this, baseUri, null, PostColumns.SUBREDDIT + " = ?", new String[] { subreddit.getDisplayName() }, null);
+        return new CursorLoader(this, baseUri, null, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()}, null);
     }
 
     @Override

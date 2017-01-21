@@ -106,7 +106,7 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e("PlaceholderFragment", "Error closing stream", e);
+                    Log.e(TAG, "Error closing stream", e);
                 }
             }
         }
@@ -146,9 +146,9 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
                     t.printStackTrace();
                 }
             }
-        } catch (JSONException jsonException) {
-            jsonException.printStackTrace();
+        } catch (Exception exception) {
             // TODO avisar usuário do erro
+            exception.printStackTrace();
             Toast.makeText(mContext, "An error occurred while loading data, please push to refresh to try again.", Toast.LENGTH_SHORT).show();
         }
     }

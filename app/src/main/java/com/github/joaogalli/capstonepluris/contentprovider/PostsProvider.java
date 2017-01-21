@@ -93,12 +93,12 @@ public class PostsProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        return db.delete(PostsDatabase.POSTS_TABLE_NAME, selection, selectionArgs);
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        return db.update(PostsDatabase.POSTS_TABLE_NAME, values, selection, selectionArgs);
     }
 
     @Nullable
