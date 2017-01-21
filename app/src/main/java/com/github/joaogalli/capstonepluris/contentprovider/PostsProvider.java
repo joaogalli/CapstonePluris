@@ -58,20 +58,15 @@ public class PostsProvider extends ContentProvider {
             case POSTS:
                 qb.setProjectionMap(POSTS_PROJECTION_MAP);
                 break;
-
             case POST_ID:
                 qb.appendWhere(PostColumns.ID + "=" + uri.getPathSegments().get(1));
                 break;
-
-            default:
         }
 
-        if (sortOrder == null || sortOrder == "") {
-            /**
-             * By default sort on student names
-             */
-            sortOrder = PostColumns.TITLE;
-        }
+//        if (sortOrder == null || sortOrder == "") {
+//            // TODO sort by date...
+//            sortOrder = PostColumns.ID;
+//        }
 
         Cursor c = qb.query(db, projection, selection,
                 selectionArgs, null, null, sortOrder);

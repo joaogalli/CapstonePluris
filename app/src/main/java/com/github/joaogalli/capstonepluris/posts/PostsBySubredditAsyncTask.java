@@ -30,13 +30,25 @@ import java.net.URL;
 public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = PostsBySubredditAsyncTask.class.getSimpleName();
+    private static final int PAGE_SIZE = 25;
 
     private Context mContext;
 
     private String subreddit;
 
+    private SearchType searchType = SearchType.NEWER;
+
+    public enum SearchType {
+        NEWER, OLDER_THAN
+    }
+
     public PostsBySubredditAsyncTask(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public PostsBySubredditAsyncTask(Context mContext, SearchType searchType) {
+        this.mContext = mContext;
+        this.searchType = searchType;
     }
 
     @Override
@@ -46,26 +58,27 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
 
         subreddit = strings[0];
 
+        String urlStr = "https://www.reddit.com/r/" + subreddit + ".json";
+
+        if (strings.length > 1) {
+            if (searchType == SearchType.OLDER_THAN) {
+                urlStr += "?limit=" + PAGE_SIZE + "&after=t3_" + strings[1];
+            }
+        }
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        // Will contain the raw JSON response as a string.
         String jsonStr = null;
-
         try {
-            // Construct the URL for the OpenWeatherMap query
-            // Possible parameters are avaiable at OWM's forecast API page, at
-            // http://openweathermap.org/API#forecast
-            Uri.Builder builder = Uri.parse("https://www.reddit.com/r/" + subreddit + ".json").buildUpon();
+            Uri.Builder builder = Uri.parse(urlStr).buildUpon();
 
             URL url = new URL(builder.toString());
 
-            // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
-            // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
@@ -79,7 +92,6 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
             }
 
             if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
                 return null;
             }
             jsonStr = buffer.toString();
