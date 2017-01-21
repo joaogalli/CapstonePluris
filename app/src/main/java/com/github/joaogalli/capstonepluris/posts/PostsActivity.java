@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
 import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
+import com.github.joaogalli.capstonepluris.model.PostColumns;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +43,8 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
     private PostsRecyclerViewAdapter adapter;
 
     private LinearLayoutManager mLayoutManager;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +83,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         String lastItemIdInReddit = adapter.getLastItemIdInReddit();
                         if (lastItemIdInReddit != null) {
-                            new PostsBySubredditAsyncTask(PostsActivity.this, PostsBySubredditAsyncTask.SearchType.OLDER_THAN).execute("space", lastItemIdInReddit);
+                            new PostsBySubredditAsyncTask(PostsActivity.this, PostsBySubredditAsyncTask.SearchType.OLDER_THAN).execute(subreddit.getDisplayName(), lastItemIdInReddit);
                         }
                     }
                 }
@@ -90,11 +94,29 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
         adapter = new PostsRecyclerViewAdapter(this);
         recyclerView.setAdapter(adapter);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItens();
+            }
+        });
+
         getLoaderManager().initLoader(0, null, this);
 
         // First load
         // TODO optimize this
-        new PostsBySubredditAsyncTask(PostsActivity.this).execute("space");
+        refreshItens();
+    }
+
+    private void refreshItens() {
+        new PostsBySubredditAsyncTask(PostsActivity.this) {
+            @Override
+            protected void onPostExecute(String jsonStr) {
+                super.onPostExecute(jsonStr);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }.execute(subreddit.getDisplayName());
     }
 
     public void onClick(View view) {
@@ -152,26 +174,16 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Uri baseUri;
-//        if (mCurFilter != null) {
-//            baseUri = Uri.withAppendedPath(PostsProvider.CONTENT_URI,
-//                    Uri.encode(mCurFilter));
-//        } else {
-        baseUri = PostsProvider.CONTENT_URI;
-//        }
+        Uri baseUri = PostsProvider.CONTENT_URI;
 
-        // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
 //        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
 //                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
 //                + Contacts.DISPLAY_NAME + " != '' ))";
 
         // new String[] {PostColumns.TITLE}
-        return new CursorLoader(this, baseUri, null, null, null, null);
 
-//        return new CursorLoader(getActivity(), baseUri,
-//                CONTACTS_SUMMARY_PROJECTION, select, null,
-//                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+        return new CursorLoader(this, baseUri, null, PostColumns.SUBREDDIT + " = ?", new String[] { subreddit.getDisplayName() }, null);
     }
 
     @Override
