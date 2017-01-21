@@ -1,9 +1,7 @@
 package com.github.joaogalli.capstonepluris.posts;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
 import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
-import com.github.joaogalli.capstonepluris.model.PostColumns;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,8 +31,8 @@ public class PostsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if (getIntent() != null && getIntent().getParcelableExtra(SUBREDDIT_PARAM) != null) {
-            subreddit = getIntent().getParcelableExtra(SUBREDDIT_PARAM);
+        if (intent != null && intent.getParcelableExtra(SUBREDDIT_PARAM) != null) {
+            subreddit = intent.getParcelableExtra(SUBREDDIT_PARAM);
         } else {
             finishActivity(RESULT_CANCELED);
         }
@@ -58,16 +55,16 @@ public class PostsActivity extends AppCompatActivity {
             }
             break;
             case R.id.insert: {
-                ContentValues values = new ContentValues();
-                values.put(PostColumns.ID, 3);
-                values.put(PostColumns.TITLE, "Teste 3");
+//                ContentValues values = new ContentValues();
+//                values.put(PostColumns.TITLE, "Teste " + System.currentTimeMillis());
+//
+//                Uri uri = getContentResolver().insert(
+//                        PostsProvider.CONTENT_URI, values);
 
-                Uri uri = getContentResolver().insert(
-                        PostsProvider.CONTENT_URI, values);
+                new PostsBySubredditAsyncTask(this).execute("space");
             }
             break;
         }
-
     }
 
     @Override

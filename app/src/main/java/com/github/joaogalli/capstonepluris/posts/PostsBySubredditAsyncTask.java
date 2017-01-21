@@ -1,10 +1,14 @@
-package com.github.joaogalli.capstonepluris.newsubreddit;
+package com.github.joaogalli.capstonepluris.posts;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
 
-import com.github.joaogalli.capstonepluris.model.Subreddit;
+import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
+import com.github.joaogalli.capstonepluris.model.Post;
+import com.github.joaogalli.capstonepluris.model.PostColumns;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,27 +20,29 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
- * Created by joaog on 15/01/2017.
+ * Created by joaog on 20/01/2017.
  */
 
-public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void, Subreddit[]> {
+public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = SearchSubredditAsyncTask.class.getSimpleName();
-    private SubredditSearchRecyclerViewAdapter mAdapter;
-    private ProgressBar progressBar;
+    private static final String TAG = PostsBySubredditAsyncTask.class.getSimpleName();
 
-    public SearchSubredditAsyncTask(SubredditSearchRecyclerViewAdapter mAdapter, ProgressBar progressBar) {
-        this.mAdapter = mAdapter;
-        this.progressBar = progressBar;
+    private Context mContext;
+
+    private String subreddit;
+
+    public PostsBySubredditAsyncTask(Context mContext) {
+        this.mContext = mContext;
     }
 
     @Override
-    protected Subreddit[] doInBackground(String... strings) {
+    protected String doInBackground(String... strings) {
         if (strings.length == 0)
             return null;
+
+        subreddit = strings[0];
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -48,8 +54,7 @@ public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void,
             // Construct the URL for the OpenWeatherMap query
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
-            Uri.Builder builder = Uri.parse("https://www.reddit.com/subreddits/search.json?").buildUpon()
-                    .appendQueryParameter("q", strings[0]);
+            Uri.Builder builder = Uri.parse("https://www.reddit.com/r/" + subreddit + ".json").buildUpon();
 
             URL url = new URL(builder.toString());
 
@@ -92,40 +97,36 @@ public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void,
             }
         }
 
-        try {
-            return getSubredditsFromJson(jsonStr);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private Subreddit[] getSubredditsFromJson(String jsonStr) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonStr);
-        JSONArray children = jsonObject.getJSONObject("data").getJSONArray("children");
-
-        Subreddit[] subreddits = new Subreddit[children.length()];
-
-        for(int i = 0; i < children.length(); i++) {
-            JSONObject childObject = children.getJSONObject(i);
-            JSONObject dataObject = childObject.getJSONObject("data");
-
-            Subreddit s = new Subreddit();
-            s.setDisplayName(dataObject.getString("display_name"));
-            s.setHeaderImg(dataObject.getString("header_img"));
-            s.setTitle(dataObject.getString("title"));
-
-            subreddits[i] = s;
-        }
-
-        return subreddits;
+        return jsonStr;
     }
 
     @Override
-    protected void onPostExecute(Subreddit[] subreddits) {
-        if (subreddits == null)
-            subreddits = new Subreddit[0];
+    protected void onPostExecute(String jsonStr) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONArray children = jsonObject.getJSONObject("data").getJSONArray("children");
 
-        mAdapter.setValues(Arrays.asList(subreddits));
-        mAdapter.notifyDataSetChanged();
+            Post[] posts = new Post[children.length()];
+
+            for (int i = 0; i < children.length(); i++) {
+                JSONObject childObject = children.getJSONObject(i);
+                JSONObject dataObject = childObject.getJSONObject("data");
+
+                ContentValues values = new ContentValues();
+                values.put(PostColumns.TITLE, dataObject.getString("title"));
+                values.put(PostColumns.SUBREDDIT, subreddit);
+                values.put(PostColumns.ID_IN_REDDIT, dataObject.getString("id"));
+
+                try {
+                    Uri uri = mContext.getContentResolver().insert(
+                            PostsProvider.CONTENT_URI, values);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        } catch(JSONException jsonException) {
+            jsonException.printStackTrace();
+            // TODO avisar usuário do erro
+        }
     }
 }
