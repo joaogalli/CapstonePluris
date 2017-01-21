@@ -2,9 +2,11 @@ package com.github.joaogalli.capstonepluris.posts;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
 import com.github.joaogalli.capstonepluris.model.Post;
@@ -115,18 +117,32 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
                 ContentValues values = new ContentValues();
                 values.put(PostColumns.TITLE, dataObject.getString("title"));
                 values.put(PostColumns.SUBREDDIT, subreddit);
-                values.put(PostColumns.ID_IN_REDDIT, dataObject.getString("id"));
+                String idInReddit = dataObject.getString("id");
+                values.put(PostColumns.ID_IN_REDDIT, idInReddit);
 
                 try {
-                    Uri uri = mContext.getContentResolver().insert(
-                            PostsProvider.CONTENT_URI, values);
+                    boolean verifyIdInRedditExists = verifyIdFromRedditExists(idInReddit);
+                    if (verifyIdInRedditExists) {
+                        // update
+                        mContext.getContentResolver().update(PostsProvider.CONTENT_URI, values, PostColumns.ID_IN_REDDIT + " = ?", new String[]{idInReddit});
+                    } else {
+                        // insert
+                        Uri uri = mContext.getContentResolver().insert(
+                                PostsProvider.CONTENT_URI, values);
+                    }
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
             }
-        } catch(JSONException jsonException) {
+        } catch (JSONException jsonException) {
             jsonException.printStackTrace();
             // TODO avisar usuário do erro
+            Toast.makeText(mContext, "An error occurred while loading data, please push to refresh to try again.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean verifyIdFromRedditExists(String idInReddit) {
+        Cursor cursor = mContext.getContentResolver().query(PostsProvider.CONTENT_URI, null, PostColumns.ID_IN_REDDIT + " = ?", new String[]{idInReddit}, null);
+        return !(cursor == null || cursor.getCount() == 0);
     }
 }
