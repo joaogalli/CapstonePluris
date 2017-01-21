@@ -107,5 +107,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="search_title">Buscar</string>
+    <string name="subreddit_search_validation_empty">You must fill a Subreddit name in the field.</string>
 
 </resources>

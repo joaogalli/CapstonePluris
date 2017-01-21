@@ -2,6 +2,7 @@ package com.github.joaogalli.capstonepluris.newsubreddit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,9 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
 
     private ProgressBar progressBar;
 
+    private String mQueryString;
+    private Handler mHandler;
+
     public NewSubredditActivityFragment() {
     }
 
@@ -52,6 +56,7 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         setHasOptionsMenu(true);
+        mHandler = new Handler();
     }
 
     @Override
@@ -63,17 +68,6 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
-//        subredditNameEditText = (EditText) view.findViewById(R.id.subredditField);
-//        ((Button) view.findViewById(R.id.addButton)).setOnClickListener(this);
-//
-//        subredditNameEditText.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                search(subredditNameEditText.getText().toString());
-//                return true;
-//            }
-//        });
-
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new SubredditSearchRecyclerViewAdapter(this);
@@ -84,8 +78,6 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-//        super.onCreateOptionsMenu(menu, menuInflater);
-
         menu.clear();
         menuInflater.inflate(R.menu.contact_list_menu, menu);
 
@@ -107,11 +99,18 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
             }
 
             @Override
-            public boolean onQueryTextChange(String query) {
-                if (validate(query)) {
-                    search(query);
-                }
-                return false;
+            public boolean onQueryTextChange(final String query) {
+                mQueryString = query;
+                mHandler.removeCallbacksAndMessages(null);
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Put your call to the server here (with mQueryString)
+                        search(mQueryString);
+                    }
+                }, 300);
+                return true;
             }
         });
 
@@ -120,7 +119,7 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
 
     private boolean validate(String subredditName) {
         if (subredditName == null || subredditName.isEmpty()) {
-            Toast.makeText(getActivity(), "You must fill a Subreddit name in the field.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.subreddit_search_validation_empty, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
