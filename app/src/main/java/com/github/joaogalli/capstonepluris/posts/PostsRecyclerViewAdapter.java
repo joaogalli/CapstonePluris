@@ -1,11 +1,13 @@
 package com.github.joaogalli.capstonepluris.posts;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.joaogalli.capstonepluris.R;
@@ -38,12 +40,48 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         cursor.moveToPosition(position);
 
-        // TODO criar contantes
         holder.mTitleView.setText(cursor.getString(cursor.getColumnIndex(PostColumns.TITLE)));
 
+        final String kind = cursor.getString(cursor.getColumnIndex(PostColumns.KIND));
+        holder.mTypeImage.setImageDrawable(mContext.getResources().getDrawable(
+                getKindImage(kind)));
+
+        final String url = cursor.getString(cursor.getColumnIndex(PostColumns.URL));
+
+        holder.mView.setOnClickListener(new PostOnClickListener(kind, url));
+    }
+
+    class PostOnClickListener implements View.OnClickListener {
+        private String kind;
+        private String url;
+
+        public PostOnClickListener(String kind, String url) {
+            this.kind = kind;
+            this.url = url;
+        }
+
+        @Override
+        public void onClick(View view) {
+            switch (kind) {
+                case "t3":
+                    Intent intent = new Intent(mContext, WebViewActivity.class);
+                    intent.putExtra(WebViewActivity.URL_PARAM, url);
+                    mContext.startActivity(intent);
+                    break;
+            }
+        }
+    }
+
+    private int getKindImage(String string) {
+        switch (string) {
+            case "t3":
+                return R.drawable.kind_link;
+        }
+
+        return 0;
     }
 
     @Override
@@ -63,11 +101,13 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mTitleView;
+        public final ImageView mTypeImage;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mTitleView = (TextView) view.findViewById(R.id.title);
+            mTypeImage = (ImageView) view.findViewById(R.id.typeImageView);
         }
 
         @Override

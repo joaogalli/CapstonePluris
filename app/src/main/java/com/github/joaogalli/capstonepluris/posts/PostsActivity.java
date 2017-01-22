@@ -56,6 +56,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
             subreddit = intent.getParcelableExtra(SUBREDDIT_PARAM);
         } else {
             finishActivity(RESULT_CANCELED);
+            return;
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

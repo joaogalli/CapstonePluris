@@ -9,11 +9,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
-import com.github.joaogalli.capstonepluris.model.Post;
 import com.github.joaogalli.capstonepluris.model.PostColumns;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -120,15 +118,15 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(jsonStr);
             JSONArray children = jsonObject.getJSONObject("data").getJSONArray("children");
 
-            Post[] posts = new Post[children.length()];
-
             for (int i = 0; i < children.length(); i++) {
                 JSONObject childObject = children.getJSONObject(i);
                 JSONObject dataObject = childObject.getJSONObject("data");
 
                 ContentValues values = new ContentValues();
+                values.put(PostColumns.KIND, childObject.getString("kind"));
                 values.put(PostColumns.TITLE, dataObject.getString("title"));
                 values.put(PostColumns.SUBREDDIT, subreddit);
+                values.put(PostColumns.URL, dataObject.getString("url"));
                 String idInReddit = dataObject.getString("id");
                 values.put(PostColumns.ID_IN_REDDIT, idInReddit);
 

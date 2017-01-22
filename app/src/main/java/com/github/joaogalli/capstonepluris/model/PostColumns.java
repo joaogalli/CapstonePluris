@@ -14,4 +14,8 @@ public class PostColumns {
 
     public static final String ID_IN_REDDIT = "id_in_reddit";
 
+    public static final String KIND = "kind";
+
+    public static final String URL = "url";
+
 }

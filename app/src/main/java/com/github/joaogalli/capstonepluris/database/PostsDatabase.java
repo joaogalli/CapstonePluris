@@ -14,13 +14,15 @@ public class PostsDatabase extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "Pluris";
     public static final String POSTS_TABLE_NAME = "posts";
-    static final int DATABASE_VERSION = 3;
+    static final int DATABASE_VERSION = 5;
     static final String CREATE_POSTS_TABLE =
             " CREATE TABLE " + POSTS_TABLE_NAME +
                     " (" + PostColumns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     PostColumns.TITLE + " TEXT NOT NULL, " +
                     PostColumns.SUBREDDIT + " TEXT NOT NULL, " +
-                    PostColumns.ID_IN_REDDIT + " TEXT UNIQUE NOT NULL " +
+                    PostColumns.ID_IN_REDDIT + " TEXT UNIQUE NOT NULL," +
+                    PostColumns.URL + " TEXT, " +
+                    PostColumns.KIND + " TEXT " +
                     ");";
 
     public PostsDatabase(Context context) {
