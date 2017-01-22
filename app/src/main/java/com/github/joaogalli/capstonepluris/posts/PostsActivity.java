@@ -85,7 +85,14 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         String lastItemIdInReddit = adapter.getLastItemIdInReddit();
                         if (lastItemIdInReddit != null) {
-                            new PostsBySubredditAsyncTask(PostsActivity.this, PostsBySubredditAsyncTask.SearchType.OLDER_THAN).execute(subreddit.getDisplayName(), lastItemIdInReddit);
+                            swipeRefreshLayout.setRefreshing(true);
+                            new PostsBySubredditAsyncTask(PostsActivity.this, PostsBySubredditAsyncTask.SearchType.OLDER_THAN) {
+                                @Override
+                                protected void onPostExecute(String jsonStr) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                    super.onPostExecute(jsonStr);
+                                }
+                            }.execute(subreddit.getDisplayName(), lastItemIdInReddit);
                         }
                     }
                 }
