@@ -36,8 +36,6 @@ public class WebViewActivity extends AppCompatActivity {
             webView.setWebViewClient(new WebViewClient());
             WebSettings webSettings = webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
-
-            System.out.println("intent.getStringExtra(URL_PARAM) = " + intent.getStringExtra(URL_PARAM));
             webView.loadUrl(intent.getStringExtra(URL_PARAM));
         } else {
             finishActivity(RESULT_CANCELED);
