@@ -14,7 +14,8 @@
             android:name=".contentprovider.PostsProvider"
             android:authorities="com.github.joaogalli.capstonepluris.PostsProvider" />
 
-        <activity android:name=".SignInActivity">
+        <activity android:name=".SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

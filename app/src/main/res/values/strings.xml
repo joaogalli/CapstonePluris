@@ -110,5 +110,6 @@
     <string name="subreddit_search_validation_empty">You must fill a Subreddit name in the field.</string>
     <string name="subreddit_removed_from_your_list">Subreddit removed from your list</string>
     <string name="something_wrong_open_link">Something went wrong opening the link.</string>
+    <string name="sign_up_with_your_preferred_method">Sign up with your preferred method</string>
 
 </resources>

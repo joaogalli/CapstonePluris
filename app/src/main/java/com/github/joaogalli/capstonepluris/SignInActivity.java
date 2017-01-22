@@ -1,6 +1,7 @@
 package com.github.joaogalli.capstonepluris;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +38,10 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
 
         // Verify there if is a user logged in
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
