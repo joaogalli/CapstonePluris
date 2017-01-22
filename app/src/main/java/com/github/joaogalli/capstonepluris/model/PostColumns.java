@@ -18,4 +18,6 @@ public class PostColumns {
 
     public static final String URL = "url";
 
+    public static final String POST_HINT = "post_hint";
+
 }

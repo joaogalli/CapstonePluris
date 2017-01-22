@@ -127,6 +127,8 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
                 values.put(PostColumns.TITLE, dataObject.getString("title"));
                 values.put(PostColumns.SUBREDDIT, subreddit);
                 values.put(PostColumns.URL, dataObject.getString("url"));
+                if (dataObject.has("post_hint"))
+                    values.put(PostColumns.POST_HINT, dataObject.getString("post_hint"));
                 String idInReddit = dataObject.getString("id");
                 values.put(PostColumns.ID_IN_REDDIT, idInReddit);
 

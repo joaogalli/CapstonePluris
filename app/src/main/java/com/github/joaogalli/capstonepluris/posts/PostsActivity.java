@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
@@ -109,6 +111,8 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     private void refreshItems() {
+        swipeRefreshLayout.setRefreshing(true);
+
         new PostsBySubredditAsyncTask(PostsActivity.this) {
             @Override
             protected void onPostExecute(String jsonStr) {

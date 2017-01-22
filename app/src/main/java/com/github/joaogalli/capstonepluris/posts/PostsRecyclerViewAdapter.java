@@ -45,43 +45,42 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
 
         holder.mTitleView.setText(cursor.getString(cursor.getColumnIndex(PostColumns.TITLE)));
 
-        final String kind = cursor.getString(cursor.getColumnIndex(PostColumns.KIND));
+        final String postHint = cursor.getString(cursor.getColumnIndex(PostColumns.POST_HINT));
         holder.mTypeImage.setImageDrawable(mContext.getResources().getDrawable(
-                getKindImage(kind)));
+                getImage(postHint)));
 
         final String url = cursor.getString(cursor.getColumnIndex(PostColumns.URL));
-
-        holder.mView.setOnClickListener(new PostOnClickListener(kind, url));
+        holder.mView.setOnClickListener(new PostOnClickListener(url));
     }
 
     class PostOnClickListener implements View.OnClickListener {
-        private String kind;
         private String url;
 
-        public PostOnClickListener(String kind, String url) {
-            this.kind = kind;
+        public PostOnClickListener(String url) {
             this.url = url;
         }
 
         @Override
         public void onClick(View view) {
-            switch (kind) {
-                case "t3":
-                    Intent intent = new Intent(mContext, WebViewActivity.class);
-                    intent.putExtra(WebViewActivity.URL_PARAM, url);
-                    mContext.startActivity(intent);
-                    break;
-            }
+            Intent intent = new Intent(mContext, WebViewActivity.class);
+            intent.putExtra(WebViewActivity.URL_PARAM, url);
+            mContext.startActivity(intent);
         }
     }
 
-    private int getKindImage(String string) {
-        switch (string) {
-            case "t3":
-                return R.drawable.kind_link;
+    private int getImage(String postHint) {
+        if (postHint != null) {
+            switch (postHint) {
+                case "image":
+                    return R.drawable.hint_image;
+                case "rich:video":
+                    return R.drawable.hint_video;
+                default:
+                    return R.drawable.hint_link;
+            }
+        } else {
+            return R.drawable.hint_link;
         }
-
-        return 0;
     }
 
     @Override
