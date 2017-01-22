@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
 import com.github.joaogalli.capstonepluris.SignInActivity;
+import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
+import com.github.joaogalli.capstonepluris.model.PostColumns;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.github.joaogalli.capstonepluris.service.SubredditFirebaseService;
 import com.github.joaogalli.capstonepluris.subredditlist.ListActivityInteraction;
@@ -38,6 +41,8 @@ import java.util.Map;
  * A placeholder fragment containing a simple view.
  */
 public class NewSubredditActivityFragment extends Fragment implements ListActivityInteraction {
+
+    private static final String TAG = NewSubredditActivity.class.getSimpleName();
 
     private SubredditSearchRecyclerViewAdapter mAdapter;
 
@@ -154,10 +159,14 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
                     subredditFirebaseService.add(subreddit);
                     toast.setText(R.string.subreddit_added_to_your_list);
                 } else {
-                    // TODO limpar banco de dados interno
-                    // criar um completionListener que aceita o diaplayName do subreddit e remove tudo
-                    subredditFirebaseService.remove(dataSnapshot.getChildren(), null);
-                    toast.setText(R.string.subreddit_removed_from_your_list);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Subreddit child = snapshot.getValue(Subreddit.class);
+                        int deletedPosts = getContext().getContentResolver()
+                                .delete(PostsProvider.CONTENT_URI, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()});
+                        subredditFirebaseService.remove(snapshot, null);
+                        toast.setText(R.string.subreddit_removed_from_your_list);
+                    }
+
                 }
                 toast.show();
             }

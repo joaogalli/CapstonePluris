@@ -71,15 +71,13 @@ public class SubredditFirebaseService {
         }
     }
 
-    public void remove(Iterable<DataSnapshot> children, DatabaseReference.CompletionListener completionListener) {
-        for (DataSnapshot child : children) {
-            if (child.getKey() != null) {
-                DatabaseReference subreddits = mDatabase.child("subreddits").child(getUid()).child(child.getKey());
-                if (completionListener == null)
-                    subreddits.removeValue();
-                else
-                    subreddits.removeValue(completionListener);
-            }
+    public void remove(DataSnapshot dataSnapshot, DatabaseReference.CompletionListener completionListener) {
+        if (dataSnapshot.getKey() != null) {
+            DatabaseReference subreddits = mDatabase.child("subreddits").child(getUid()).child(dataSnapshot.getKey());
+            if (completionListener == null)
+                subreddits.removeValue();
+            else
+                subreddits.removeValue(completionListener);
         }
     }
 
