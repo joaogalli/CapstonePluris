@@ -108,5 +108,6 @@
     </string>
     <string name="search_title">Buscar</string>
     <string name="subreddit_search_validation_empty">You must fill a Subreddit name in the field.</string>
+    <string name="subreddit_removed_from_your_list">Subreddit removed from your list</string>
 
 </resources>

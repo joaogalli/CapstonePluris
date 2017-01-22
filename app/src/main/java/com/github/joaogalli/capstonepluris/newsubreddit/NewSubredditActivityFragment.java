@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -22,9 +23,13 @@ import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
 import com.github.joaogalli.capstonepluris.SignInActivity;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
+import com.github.joaogalli.capstonepluris.service.SubredditFirebaseService;
 import com.github.joaogalli.capstonepluris.subredditlist.ListActivityInteraction;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +38,6 @@ import java.util.Map;
  * A placeholder fragment containing a simple view.
  */
 public class NewSubredditActivityFragment extends Fragment implements ListActivityInteraction {
-
-    private DatabaseReference mDatabase;
-
-    private EditText subredditNameEditText;
 
     private SubredditSearchRecyclerViewAdapter mAdapter;
 
@@ -47,13 +48,15 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
     private String mQueryString;
     private Handler mHandler;
 
+    private SubredditFirebaseService subredditFirebaseService;
+
     public NewSubredditActivityFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        subredditFirebaseService = new SubredditFirebaseService(getContext());
 
         setHasOptionsMenu(true);
         mHandler = new Handler();
@@ -70,8 +73,9 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
 
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new SubredditSearchRecyclerViewAdapter(this);
+        mAdapter = new SubredditSearchRecyclerViewAdapter(subredditFirebaseService, this);
         recyclerView.setAdapter(mAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         return view;
     }
@@ -142,26 +146,27 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
     }
 
     @Override
-    public void onListActivityInteraction(Subreddit subreddit) {
-        add(subreddit);
-        toast.setText(R.string.subreddit_added_to_your_list);
-        toast.show();
+    public void onListActivityInteraction(final Subreddit subreddit) {
+        subredditFirebaseService.exists(subreddit, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    subredditFirebaseService.add(subreddit);
+                    toast.setText(R.string.subreddit_added_to_your_list);
+                } else {
+                    // TODO limpar banco de dados interno
+                    // criar um completionListener que aceita o diaplayName do subreddit e remove tudo
+                    subredditFirebaseService.remove(dataSnapshot.getChildren(), null);
+                    toast.setText(R.string.subreddit_removed_from_your_list);
+                }
+                toast.show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void add(Subreddit subreddit) {
-        String uid = FirebaseUtils.getUidOrGoToLogin(getContext());
-
-        String key = mDatabase.child("subreddits").child(uid).push().getKey();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-
-        if (uid != null) {
-            childUpdates.put("/subreddits/" + uid + "/" + key, subreddit.toMap());
-            mDatabase.updateChildren(childUpdates);
-        } else {
-            Toast.makeText(getContext(), R.string.your_login_expired, Toast.LENGTH_SHORT).show();
-            FirebaseUtils.logout(getContext());
-            startActivity(new Intent(getContext(), SignInActivity.class));
-        }
-    }
 }

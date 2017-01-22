@@ -20,6 +20,7 @@ import com.github.joaogalli.capstonepluris.SignInActivity;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.github.joaogalli.capstonepluris.newsubreddit.NewSubredditActivity;
 import com.github.joaogalli.capstonepluris.posts.PostsActivity;
+import com.github.joaogalli.capstonepluris.service.SubredditFirebaseService;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,8 +33,6 @@ import java.util.List;
 
 public class SubredditListActivity extends AppCompatActivity implements ValueEventListener, ListActivityInteraction {
 
-    private DatabaseReference mDatabase;
-
     private SubredditRecyclerViewAdapter mAdapter;
 
     private TextView emptyTextView;
@@ -41,6 +40,8 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
     private GoogleApiClient mGoogleApiClient;
 
     private ProgressBar progressBar;
+
+    private SubredditFirebaseService subredditFirebaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +59,8 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
             }
         });
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        String uid = FirebaseUtils.getUidOrGoToLogin(this);
-        DatabaseReference child = mDatabase.child("subreddits").child(uid);
-//        child.addListenerForSingleValueEvent(this);
-        child.addValueEventListener(this);
+        subredditFirebaseService = new SubredditFirebaseService(this);
+        subredditFirebaseService.registerForUidSubreddits(this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

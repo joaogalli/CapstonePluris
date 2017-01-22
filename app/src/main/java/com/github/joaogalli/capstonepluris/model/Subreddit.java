@@ -73,6 +73,16 @@ public class Subreddit implements Parcelable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Subreddit{" +
+                "key='" + key + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", headerImg='" + headerImg + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
+
     public String getKey() {
         return key;
     }
