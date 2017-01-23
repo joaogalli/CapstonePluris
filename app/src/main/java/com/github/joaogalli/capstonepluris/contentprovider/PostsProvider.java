@@ -36,14 +36,13 @@ public class PostsProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "posts/#", POST_ID);
     }
 
-    private PostsDatabase postsDatabase;
     private SQLiteDatabase db;
 
     private static HashMap<String, String> POSTS_PROJECTION_MAP;
 
     @Override
     public boolean onCreate() {
-        postsDatabase = new PostsDatabase(getContext());
+        PostsDatabase postsDatabase = new PostsDatabase(getContext());
         db = postsDatabase.getWritableDatabase();
         return (db != null);
     }

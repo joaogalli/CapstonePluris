@@ -113,5 +113,9 @@
     <string name="sign_up_with_your_preferred_method">Sign up with your preferred method</string>
     <string name="pluris_widget_label">Pluris Subreddit\'s Posts</string>
     <string name="no_posts_found">No posts found</string>
+    <string name="post_type">Post Type</string>
+    <string name="subreddit_selection">Subreddit Selection</string>
+    <string name="app_logo">App Logo</string>
+    <string name="welcome_to_pluris">Welcome to Pluris</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.github.joaogalli.capstonepluris.newsubreddit;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -9,20 +8,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.github.joaogalli.capstonepluris.FirebaseUtils;
 import com.github.joaogalli.capstonepluris.R;
-import com.github.joaogalli.capstonepluris.SignInActivity;
 import com.github.joaogalli.capstonepluris.contentprovider.PostsProvider;
 import com.github.joaogalli.capstonepluris.model.PostColumns;
 import com.github.joaogalli.capstonepluris.model.Subreddit;
@@ -30,12 +25,7 @@ import com.github.joaogalli.capstonepluris.service.SubredditFirebaseService;
 import com.github.joaogalli.capstonepluris.subredditlist.ListActivityInteraction;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -135,19 +125,7 @@ public class NewSubredditActivityFragment extends Fragment implements ListActivi
     }
 
     private void search(String query) {
-        new SearchSubredditAsyncTask(mAdapter, progressBar) {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            protected void onPostExecute(Subreddit[] subreddits) {
-                progressBar.setVisibility(View.GONE);
-                super.onPostExecute(subreddits);
-            }
-        }.execute(query);
+        new SearchSubredditAsyncTask(mAdapter, progressBar).execute(query);
     }
 
     @Override

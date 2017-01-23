@@ -9,14 +9,14 @@
         android:id="@+id/typeImageView"
         android:layout_width="8dp"
         android:layout_height="8dp"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/post_type"/>
 
     <TextView
         android:id="@+id/title"
         style="@style/Base.TextAppearance.AppCompat.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:text="TextView" />
+        android:paddingLeft="16dp"/>
 
 </LinearLayout>

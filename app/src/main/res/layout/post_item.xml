@@ -5,18 +5,17 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-
     <ImageView
         android:id="@+id/typeImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/post_type" />
 
     <TextView
         android:id="@+id/title"
         style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:text="TextView" />
+        android:paddingLeft="16dp"/>
 </LinearLayout>

@@ -19,51 +19,24 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:contentDescription="@string/app_logo"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Pluris"
+        android:text="@string/welcome_to_pluris"
         android:textColor="@color/white"
         style="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:text="Is Auth?"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/isAuth"
-        android:onClick="onClick"
-        android:layout_above="@+id/logoff"
         android:layout_centerHorizontal="true" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/isAuth"
-        android:layout_centerHorizontal="true"/>
-
-    <Button
-        android:text="Logoff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/logoff"
-        android:onClick="onClick"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/isAuth" />
-
-    <TextView
-        android:text="@string/sign_up_with_your_preferred_method"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/sign_in_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
-        android:textColor="@color/white"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:id="@+id/textView2" />
+        android:layout_marginBottom="130dp" />
 
 </RelativeLayout>

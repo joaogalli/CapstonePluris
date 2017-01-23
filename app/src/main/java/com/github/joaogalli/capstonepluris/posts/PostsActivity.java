@@ -16,8 +16,6 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.joaogalli.capstonepluris.FirebaseUtils;
@@ -142,10 +140,6 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
         if (id == R.id.action_remove_subreddit) {
             removeKey();
             return true;
-        } else if (id == R.id.action_count) { // TODO remover
-            Cursor cursor = getContentResolver().query(PostsProvider.CONTENT_URI, null, PostColumns.SUBREDDIT + " = ?", new String[] { subreddit.getDisplayName() }, null);
-            Toast.makeText(this, "Count: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
-            cursor.close();
         }
 
         return super.onOptionsItemSelected(item);

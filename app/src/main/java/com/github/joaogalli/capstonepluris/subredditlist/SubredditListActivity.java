@@ -24,8 +24,6 @@ import com.github.joaogalli.capstonepluris.service.SubredditFirebaseService;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -40,8 +38,6 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
     private GoogleApiClient mGoogleApiClient;
 
     private ProgressBar progressBar;
-
-    private SubredditFirebaseService subredditFirebaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +55,7 @@ public class SubredditListActivity extends AppCompatActivity implements ValueEve
             }
         });
 
-        subredditFirebaseService = new SubredditFirebaseService(this);
-        subredditFirebaseService.registerForUidSubreddits(this);
+        new SubredditFirebaseService(this).registerForUidSubreddits(this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

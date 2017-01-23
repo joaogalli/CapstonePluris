@@ -2,6 +2,7 @@ package com.github.joaogalli.capstonepluris.newsubreddit;
 
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.github.joaogalli.capstonepluris.model.Subreddit;
@@ -31,6 +32,12 @@ public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void,
     public SearchSubredditAsyncTask(SubredditSearchRecyclerViewAdapter mAdapter, ProgressBar progressBar) {
         this.mAdapter = mAdapter;
         this.progressBar = progressBar;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -122,8 +129,11 @@ public class SearchSubredditAsyncTask extends android.os.AsyncTask<String, Void,
 
     @Override
     protected void onPostExecute(Subreddit[] subreddits) {
-        if (subreddits == null)
+        progressBar.setVisibility(View.GONE);
+
+        if (subreddits == null) {
             subreddits = new Subreddit[0];
+        }
 
         mAdapter.setValues(Arrays.asList(subreddits));
         mAdapter.notifyDataSetChanged();
