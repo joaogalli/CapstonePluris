@@ -6,4 +6,5 @@
 
     <color name="iconColor">#448aff</color>
     <color name="white">#FFFFFF</color>
+    <color name="widgetBackground">#EEEEEE</color>
 </resources>
