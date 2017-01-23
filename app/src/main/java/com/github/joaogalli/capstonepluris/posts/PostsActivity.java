@@ -146,8 +146,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     private void removeKey() {
-        int deletedPosts = this.getContentResolver().delete(PostsProvider.CONTENT_URI, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()});
-        Toast.makeText(this, "Deleted posts = " + deletedPosts, Toast.LENGTH_LONG).show();
+        this.getContentResolver().delete(PostsProvider.CONTENT_URI, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()});
 
         String uid = FirebaseUtils.getUidOrGoToLogin(this);
         DatabaseReference subreddits = mDatabase.child("subreddits").child(uid).child(subreddit.getKey());

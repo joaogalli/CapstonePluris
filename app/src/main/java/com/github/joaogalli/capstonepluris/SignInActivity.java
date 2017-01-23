@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.joaogalli.capstonepluris.newsubreddit.NewSubredditActivity;
 import com.github.joaogalli.capstonepluris.subredditlist.SubredditListActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -101,16 +100,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         switch (view.getId()) {
             case R.id.sign_in_button:
                 signInGoogle();
-                break;
-            case R.id.isAuth:
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Toast.makeText(this, "Is auth: " + FirebaseAuth.getInstance().getCurrentUser().getUid()
-                            , Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.logoff:
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(this, "Logged off", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
