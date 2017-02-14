@@ -72,7 +72,7 @@ public class PostsProvider extends ContentProvider {
         /**
          * register to watch a content URI for changes
          */
-        c.setNotificationUri(getContext().getContentResolver(), uri);
+        c.setNotificationUri(getContext().getContentResolver(), PostsProvider.CONTENT_URI);
         return c;
     }
 

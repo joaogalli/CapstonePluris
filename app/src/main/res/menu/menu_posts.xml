@@ -7,4 +7,10 @@
         android:orderInCategory="100"
         android:title="@string/action_remove_subreddit"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_zuar"
+        android:orderInCategory="101"
+        android:title="Zuar"
+        app:showAsAction="always" />
 </menu>

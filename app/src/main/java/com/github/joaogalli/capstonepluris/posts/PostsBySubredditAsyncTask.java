@@ -146,6 +146,7 @@ public class PostsBySubredditAsyncTask extends AsyncTask<String, Void, String> {
                     t.printStackTrace();
                 }
             }
+            mContext.getContentResolver().notifyChange(PostsProvider.CONTENT_URI, null);
         } catch (Exception exception) {
             // TODO avisar usuário do erro
             exception.printStackTrace();

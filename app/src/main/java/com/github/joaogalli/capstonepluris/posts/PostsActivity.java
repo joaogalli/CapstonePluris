@@ -1,11 +1,11 @@
 package com.github.joaogalli.capstonepluris.posts;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +26,8 @@ import com.github.joaogalli.capstonepluris.model.Subreddit;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
 
 /**
  * Codes from https://developer.android.com/guide/components/loaders.html
@@ -140,6 +142,11 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
         if (id == R.id.action_remove_subreddit) {
             removeKey();
             return true;
+        } else if (id == R.id.action_zuar) {
+            ContentValues values = new ContentValues();
+            values.put(PostColumns.TITLE, new Date().toString());
+            getContentResolver().update(PostsProvider.CONTENT_URI, values, PostColumns.SUBREDDIT + " = ?", new String[] { subreddit.getDisplayName() });
+            this.getContentResolver().notifyChange(PostsProvider.CONTENT_URI, null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -165,16 +172,7 @@ public class PostsActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Uri baseUri = PostsProvider.CONTENT_URI;
-
-        // creating a Cursor for the data being displayed.
-//        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-//                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-//                + Contacts.DISPLAY_NAME + " != '' ))";
-
-        // new String[] {PostColumns.TITLE}
-
-        return new CursorLoader(this, baseUri, null, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()}, null);
+        return new CursorLoader(this, PostsProvider.CONTENT_URI, null, PostColumns.SUBREDDIT + " = ?", new String[]{subreddit.getDisplayName()}, null);
     }
 
     @Override
